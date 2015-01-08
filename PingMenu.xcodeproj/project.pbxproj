@@ -17,6 +17,7 @@
 		12C9F8CF13E6549300739017 /* PingMenuAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 12C9F8CE13E6549300739017 /* PingMenuAppDelegate.m */; };
 		12C9F8D213E6549300739017 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 12C9F8D013E6549300739017 /* MainMenu.xib */; };
 		12C9F8DE13E6586600739017 /* SimplePing.m in Sources */ = {isa = PBXBuildFile; fileRef = 12C9F8DD13E6586600739017 /* SimplePing.m */; };
+		680DE0661A52C5CC00C6D528 /* CoreWLAN.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 680DE0651A52C5CC00C6D528 /* CoreWLAN.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,6 +41,8 @@
 		12C9F8D113E6549300739017 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		12C9F8DC13E6586600739017 /* SimplePing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimplePing.h; sourceTree = "<group>"; };
 		12C9F8DD13E6586600739017 /* SimplePing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SimplePing.m; sourceTree = "<group>"; };
+		680DE0621A52B95A00C6D528 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		680DE0651A52C5CC00C6D528 /* CoreWLAN.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreWLAN.framework; path = System/Library/Frameworks/CoreWLAN.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -47,6 +50,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				680DE0661A52C5CC00C6D528 /* CoreWLAN.framework in Frameworks */,
 				12C9F8BC13E6549300739017 /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -74,6 +78,8 @@
 		12C9F8BA13E6549300739017 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				680DE0651A52C5CC00C6D528 /* CoreWLAN.framework */,
+				680DE0621A52B95A00C6D528 /* SystemConfiguration.framework */,
 				12C9F8BB13E6549300739017 /* Cocoa.framework */,
 				12C9F8BD13E6549300739017 /* Other Frameworks */,
 			);

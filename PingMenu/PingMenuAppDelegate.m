@@ -11,6 +11,7 @@
 
 #include <sys/socket.h>
 #include <netdb.h>
+#import <CoreWLAN/CoreWLAN.h>
 
 #define DEFAULTS_HOSTNAME @"hostName"
 
@@ -231,12 +232,16 @@
         titleText = self.latestError;
         titleColor = COLOR_BAD;
         
+        [self startScanner:titleText];
+        
     } else if (!didStartHasSucceeded) {
         titleText = @"Ping";
         
     } else if (lastFailedEvent && lastSuccessfulEvent && lastFailedEvent.sequenceNr > lastSuccessfulEvent.sequenceNr) {
         titleText = [self parseError:lastFailedEvent.resultError];
         titleColor = COLOR_BAD;
+        
+        [self startScanner:titleText];
     
     } else if (!lastSuccessfulEvent && didStartHasSucceeded) {
         if (self.lastSeen) {
@@ -252,6 +257,8 @@
         }
         
         titleColor = COLOR_BAD;
+        
+        [self startScanner:titleText];
 
         /*
     } else if (!lastSuccessfulEvent && didStartHasSucceeded) {
@@ -262,9 +269,13 @@
         titleColor = COLOR_BAD;
         titleText = @"(over 10s)";
         
+        [self startScanner:titleText];
+        
     } else if ([lastSentEvent timeSinceSent] > [lastSuccessfulEvent timeSinceSent]+.1 && lastSentEvent.sequenceNr>lastSuccessfulEvent.sequenceNr) {
         titleColor = COLOR_SLOW;
         titleText = [NSString stringWithFormat:@"%1.3fs",[lastSuccessfulEvent timeSinceSent]];
+        
+        [self startScanner:titleText];
         
     } else if (lastSuccessfulEvent) {
         titleText = [NSString stringWithFormat:@"%1.3fs",[lastSuccessfulEvent timeSinceSent]];
@@ -277,7 +288,77 @@
     [self.pings removeObjectsForKeys:removeKeys];
 }
 
+- (void)startScanner:(NSString *)errorMsg
+{
+    if (errorMsg)
+    {
+        [self writeLog:@"--------------------- Error ---------------------"];
+        [self writeLog:errorMsg];
+        [self writeLog:@"---------------------- End ----------------------"];
+    }
+    
+    // SolutionA
+    // sudo /System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport -s
+    
+    // SolutionB
+    CWInterface *currentInterface = [CWInterface interface];
+    
+    [self writeLog:@"Starting scanning network..."];
+    NSArray *networks = [[currentInterface scanForNetworksWithName:nil error:nil] allObjects];
+    [self writeLog:@"Finished scanning network..."];
+    
+    NSMutableString *strNetList = [[NSMutableString alloc] init];
+    for (CWNetwork *network in networks) {
+        NSLog(@"SSID: %@, BSSID: %@.", [network ssid], [network bssid]);
+        [strNetList appendFormat:@"SSID: %@, BSSID: %@.\n", [network ssid], [network bssid]];
+    }
+    
+    [self writeLog:strNetList];
+}
 
+static NSString *logFilePath;
+
+- (void)writeLog:(NSString *)content
+{
+    if (!logFilePath)
+    {
+        NSString *cacheDir = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES)[0];
+        NSString *cacheRoot = [cacheDir stringByAppendingPathComponent:@"PingMenu/Logs"];
+        logFilePath = [[cacheRoot stringByAppendingPathComponent:@"logme.txt"] retain];
+        
+        NSFileManager *fileMgr = [NSFileManager defaultManager];
+        if (![fileMgr fileExistsAtPath:cacheRoot])
+        {
+            [fileMgr createDirectoryAtPath:cacheRoot withIntermediateDirectories:YES attributes:nil error:nil];
+            [fileMgr createFileAtPath:logFilePath contents:nil attributes:nil];
+        }
+        
+        NSLog(@"logfilepath: %@", logFilePath);
+    }
+    
+    
+    NSString *strLog = [NSString stringWithFormat:@"%@: %@ \n", [NSDate date], content];
+    
+    /*
+    NSString* contents = [NSString stringWithContentsOfFile:logFilePath
+                                                   encoding:NSUTF8StringEncoding
+                                                      error:nil];
+    
+    content = [content stringByAppendingFormat:@"%@\n", strLog];
+    
+    NSLog(@"content: %@", content);
+    
+    [contents writeToFile:@"/Users/hanwei/Documents/PingMenu/Logs/logme.txt" atomically:NO
+                 encoding:NSUnicodeStringEncoding
+                    error:nil];
+    */
+    
+    NSFileHandle *fileHandle = [NSFileHandle fileHandleForWritingAtPath:logFilePath];
+    [fileHandle seekToEndOfFile];
+    [fileHandle writeData:[strLog dataUsingEncoding:NSMacOSRomanStringEncoding]];
+    [fileHandle synchronizeFile];
+    [fileHandle closeFile];
+}
 
 
 - (NSString *)_shortErrorFromError:(NSError *)error

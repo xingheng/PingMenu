@@ -1,3 +1,17 @@
+**Background**
+
+Will Han: 
+
+This fork is aiming to fix my private network issue. Here is it, my macbook could connect the Internet via my wireless router in most time, BUT the connection is just broken with some unknown reason sometimes, I ran a ping command in terminal to track and get the result, this is crazy situation recently and I didn't find the root cause.
+
+Only a good news is that if that problem occurs, clicking and holding the Airport/WiFi icon in system menu bar could make the Internet connection alive again. This process did show tips "WiFi: Looking for Networks..." and "WiFi: On".
+
+So, here is a solution, ran a program with ping command to check the connectivity, once the connection is broken, scan the WiFi point list again, problem solved.
+
+I just tried to implementation a mac desktop app like PingMenu and found it in github (thanks for kalleboo's great work), so here is the fork, for my network issue.
+
+---
+
 h1. PingMenu README
 
 Download compiled version: https://github.com/kalleboo/PingMenu/raw/master/PingMenu.app.zip
